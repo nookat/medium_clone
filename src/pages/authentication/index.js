@@ -1,7 +1,8 @@
 import {useState, useEffect} from 'react'
-import {Redirect, Link, useLocation, useParams} from 'react-router-dom'
+import {Redirect, Link, useLocation} from 'react-router-dom'
 
 import useFetch from 'hooks/useFetch'
+import useLocalStorage from 'hooks/useLocalStorage'
 
 const Authentication = () => {
   const [email, setEmail] = useState('')
@@ -9,7 +10,6 @@ const Authentication = () => {
   const [username, setUsername] = useState('')
 
   const { pathname } = useLocation()
-  const params = useParams()
 
   const isLogin = pathname === '/login'
   const pageTitle = isLogin ? 'Sign in' : 'Sign up'
@@ -17,12 +17,15 @@ const Authentication = () => {
   const descriptionText = isLogin ? 'Need an account?' : 'Have an account?'
 
   const apiUrl = isLogin ? '/users/login' : '/users'
-  const [{ response, isLoading, error }, doFetch] = useFetch(apiUrl)
+  const [{ response, isLoading }, doFetch] = useFetch(apiUrl)
   const [isSuccessfulSubmit, setIsSuccessfulSubmit] = useState(false)
+
+  const [token, setToken] = useLocalStorage('token')
+  console.log(token)
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log('data', response, error)
+    console.log('data', email, password)
     const user = isLogin ? { email, password } : { email, password, username }
 
     doFetch({
@@ -35,9 +38,9 @@ const Authentication = () => {
 
   useEffect(() => {
     if (!response) return
-    localStorage.setItem('token', response.user.token)
+    setToken(response.user.token)
     setIsSuccessfulSubmit(true)
-  }, [response])
+  }, [response, setToken])
 
   if (isSuccessfulSubmit) {
     return <Redirect to="/"/>
