@@ -1,8 +1,9 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useContext} from 'react'
 import {Redirect, Link, useLocation} from 'react-router-dom'
 
 import useFetch from 'hooks/useFetch'
 import useLocalStorage from 'hooks/useLocalStorage'
+import {CurrentUserContext} from 'contexts/currentUser'
 
 const Authentication = () => {
   const [email, setEmail] = useState('')
@@ -22,6 +23,8 @@ const Authentication = () => {
 
   const [token, setToken] = useLocalStorage('token')
   console.log(token)
+  const [currentUserState, setCurrentUserState] = useContext(CurrentUserContext)
+  console.log('currentUserState', currentUserState)
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -40,6 +43,12 @@ const Authentication = () => {
     if (!response) return
     setToken(response.user.token)
     setIsSuccessfulSubmit(true)
+    setCurrentUserState(state => ({
+      ...state,
+      isLoggedIn: true,
+      isLoading: false,
+      currentUser: response.user
+    }))
   }, [response, setToken])
 
   if (isSuccessfulSubmit) {
