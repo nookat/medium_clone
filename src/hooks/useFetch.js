@@ -1,5 +1,7 @@
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useCallback} from 'react'
 import axios from 'axios'
+
+import useLocalStorage from 'hooks/useLocalStorage'
 
 const useFetch = (url) => {
   const baseUrl = 'https://api.realworld.io/api'
@@ -7,16 +9,26 @@ const useFetch = (url) => {
   const [response, setResponse] = useState(null)
   const [error, setError] = useState(null)
   const [options, setOptions] = useState({})
+  const [token] = useLocalStorage('token')
 
-  const doFetch = (options = {}) => {
+  const doFetch = useCallback((options = {}) => {
     setOptions(options)
     setIsLoading(true)
-  }
+  }, [])
 
   useEffect(() => {
+    const requestOptions = {
+      ...options,
+      ...{
+        headers: {
+          authorization: token ? `Token ${token}` : ''
+        }
+      }
+    }
+
     if (!isLoading) return
 
-    axios(baseUrl + url, options).then(res => {
+    axios(baseUrl + url, requestOptions).then(res => {
       console.log('success', res)
       setIsLoading(false)
       setResponse(res.data)
@@ -25,7 +37,7 @@ const useFetch = (url) => {
       setIsLoading(false)
       setError(error.response.data)
     })
-  }, [isLoading, options, url])
+  }, [isLoading, options, url, token])
 
   return [{ isLoading, response, error }, doFetch]
 }
