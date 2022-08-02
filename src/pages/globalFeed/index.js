@@ -4,6 +4,7 @@ import {stringify} from 'query-string'
 import Loading from 'components/loading'
 import ErrorMessage from 'components/errorMessage'
 import Feed from 'components/feed'
+import FeedToggler from 'components/feedToggler'
 import Pagination from 'components/pagination'
 import PopularTags from 'components/popularTags'
 import useFetch from 'hooks/useFetch'
@@ -34,6 +35,7 @@ const GlobalFeed = ({ location, match }) => {
       <div className="container page">
         <div className="row">
           <div className="col-md-9">
+            <FeedToggler/>
             {isLoading && <Loading/>}
             {error && <ErrorMessage/>}
             {
@@ -49,7 +51,7 @@ const GlobalFeed = ({ location, match }) => {
               )
             }
           </div>
-          <div className="col-md-3">
+          <div className=" col-md-3">
             <PopularTags/>
           </div>
         </div>
