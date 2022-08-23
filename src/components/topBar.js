@@ -39,8 +39,14 @@ const TopBar = () => {
               <>
                 <li className="nav-item">
                   <NavLink to="/articles/new" className="nav-link">
-                    <i className="ion-compose"></i>
+                    <i className="ion-compose"/>
                     &nbsp; New Post
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink to="/settings" className="nav-link">
+                    <i className="ion-gear-a"/>
+                    &nbsp; Settings
                   </NavLink>
                 </li>
                 <li className="nav-item">
