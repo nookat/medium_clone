@@ -14,7 +14,7 @@ const ArticleForm = ({ onSubmit, errors, initialValues }) => {
       title,
       body,
       description,
-      tagList
+      tagList: tagList.split(' ')
     }
     onSubmit(article)
   }
