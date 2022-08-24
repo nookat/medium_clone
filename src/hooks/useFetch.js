@@ -17,6 +17,8 @@ const useFetch = (url) => {
   }, [])
 
   useEffect(() => {
+    let skipGetResponseAfterDestroy = false
+
     const requestOptions = {
       ...options,
       ...{
@@ -29,14 +31,20 @@ const useFetch = (url) => {
     if (!isLoading) return
 
     axios(baseUrl + url, requestOptions).then(res => {
-      console.log('success', res)
-      setIsLoading(false)
-      setResponse(res.data)
+      if (!skipGetResponseAfterDestroy) {
+        setIsLoading(false)
+        setResponse(res.data)
+      }
     }).catch(error => {
-      console.log('error', error)
-      setIsLoading(false)
-      setError(error.response.data)
+      if (!skipGetResponseAfterDestroy) {
+        setIsLoading(false)
+        setError(error.response.data)
+      }
     })
+
+    return () => {
+      skipGetResponseAfterDestroy = true
+    }
   }, [isLoading, options, url, token])
 
   return [{ isLoading, response, error }, doFetch]
